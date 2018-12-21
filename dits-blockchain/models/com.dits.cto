@@ -1,0 +1,241 @@
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/**
+ * Write your model definitions here
+ */
+
+namespace com.dits
+
+//--Participants
+
+abstract participant User identified by id {
+  o String id
+  o String username
+  o String email optional
+  o String language optional
+  o String firstName optional
+  o String lastName optional
+  o String phoneNumber optional
+}
+
+participant Employer extends User {
+  o Double score default=0.0 optional
+  o Job[] jobs optional
+  o Employee[] favouriteEmployees optional
+}
+
+participant Employee extends User {
+  o String websiteUrl optional
+  o Address address optional
+  o WorkInformation workInformation optional
+  o String companyName optional
+  o Boolean istop default=false optional
+  o Double score default=0.0 optional
+  o Question[] questions optional
+  o Job[] jobs optional
+}
+
+asset Address identified by id {
+  o String id
+  o String address1
+  o String address2 optional
+  o String city
+  o String country
+  --> User owner
+}
+
+asset WorkInformation identified by id {
+  o String id
+  o String hourlyRate
+  o TechnicalCategory[] categories
+  --> User owner
+}
+
+enum TechnicalCategory {
+  o PROGRAMMING
+  o SALES
+  o MARKETING
+}
+
+@returns(Employer)
+transaction AddFavouriteEmployeeForEmployer {
+  --> Employee employee
+  --> Employer employer
+}
+
+//--Job and rating part
+
+asset Job identified by id {
+  o String id
+  o String shortDescription
+  o Boolean isFinished default=false optional
+  o String category
+  o String subCategory
+  o Bid[] bids optional
+  o Rate employerRating optional
+  o Rate employeeRating optional
+  --> Employer employer
+  --> Employee employee optional
+}
+
+asset Bid identified by id {
+  o String id
+  o Double amount
+  o String proposalDescription optional
+  --> Job job
+}
+
+@returns(Bid)
+transaction BidToJob {
+  o String id
+  o Double amount
+  o String proposalDescription optional
+  --> Job job
+}
+
+@returns(Job)
+transaction GiveJobToEmployee {
+  --> Job job
+  --> Employee employee
+}
+
+asset Rate identified by id {
+  o String id
+  o Double value default=0.0
+  --> User owner
+  --> Job job
+}
+
+@returns(Job)
+transaction RateJob {
+  o String rateId
+  o Double value default=0.0
+  --> User owner
+  --> Job job
+}
+
+// Used if employee hasn't finished job in time or else
+@returns(Job)
+transaction RemoveJobFromEmployee {
+  --> Job job
+  --> Employee employee
+}
+  
+@returns(Job)
+transaction FinishJob {
+  --> Job job
+}
+
+//--Question part
+asset Question identified by id {
+  o String id
+  o String question
+  o String correctAnswer
+  o Boolean isValid default=false
+  o Double percentageOfCorrectAnswers default=0.0
+  o Integer numberOfAnswers default=0 
+  o Answer[] answers optional
+  --> Employee owner
+}
+  
+@returns(Question)
+transaction ProposeQuestion {
+  o String questionId
+  o String question
+  o String correctAnswer
+  --> Employee owner
+}
+  
+asset Answer identified by id {
+  o String id
+  o String answer
+  --> Question question
+  --> Employee owner
+}
+ 
+//Can only be answered by Top Employees 
+transaction AnswerProposedQuestion {
+  o String id
+  o String answer
+  --> Question question
+  --> Employee owner
+}
+
+asset Test identified by id {
+  o String id
+  o String testName
+  o String category
+  o String subCategory
+  o Double score
+  o Question[] questions
+  o Answer[] answers
+}
+
+@returns(Test)
+transaction FinishTestAndCalculateScoreForTest {
+  --> Test test
+}
+
+//This should be done inside AnswerProposedQuestion and if answer is correct
+transaction RewardTopEmployeeForCorrectAnswer {
+  --> User sender
+  --> User receiver
+  o Double amount
+}
+
+//This should be calculated periodically
+transaction CalculateTopEmployees { 
+}
+
+event TransactionCompleted {
+  o String msg
+}
+
+//----Coins
+
+asset Vault identified by id {
+  o String id
+  o Double amount
+  --> User owner
+  o CoinTransaction[] transactions optional
+}
+
+concept CoinTransaction {
+  o Double amount
+  o CoinTransactionType type
+}
+
+enum CoinTransactionType {
+  o DEPOSIT
+  o WITHDRAW
+  o SEND
+  o RECEIVE
+}
+
+transaction DepositCoin {
+  --> Vault vault
+  o Double amount
+}
+
+transaction WithdrawCoin {
+  --> Vault vault
+  o Double amount
+}
+
+transaction TransferCoin {
+  --> Vault sender
+  --> Vault receiver
+  o Double amount
+}

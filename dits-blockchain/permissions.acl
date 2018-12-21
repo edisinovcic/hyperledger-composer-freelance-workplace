@@ -1,0 +1,115 @@
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/**
+ * Access control list.
+ */
+
+/* Access for network admins is completely prohibited */ 
+
+/*
+rule AllowEveryoneAccessToEverything {
+  description:  "All access"
+  participant: "*"
+  operation: ALL
+  resource: "*"
+  action: ALLOW
+}
+*/
+
+
+rule SystemACL {
+  description:  "System ACL to permit all access"
+  participant: "org.hyperledger.composer.system.Participant"
+  operation: ALL
+  resource: "org.hyperledger.composer.system.**"
+  action: ALLOW
+}
+
+rule NetworkAdminUser {
+    description: "Grant business network administrators full access to user resources"
+    participant: "org.hyperledger.composer.system.NetworkAdmin"
+    operation: ALL
+    resource: "**"
+    action: ALLOW
+}
+
+rule NetworkAdminSystem {
+    description: "Grant business network administrators full access to system resources"
+    participant: "org.hyperledger.composer.system.NetworkAdmin"
+    operation: ALL
+    resource: "org.hyperledger.composer.system.**"
+    action: ALLOW
+}
+
+//--------------------------------------------------
+
+rule EmployerHasFullControlOfHimself {
+    description: "Employer has full control of himself"
+    participant(p): "com.dits.Employer"
+    operation: ALL
+    resource(r): "com.dits.Employer"
+    condition: (r.getIdentifier() == p.getIdentifier())
+    action: ALLOW
+}
+
+rule EmployeeHasFullControlOfHimself {
+    description: "Employee has full control of himself"
+    participant(p): "com.dits.Employee"
+    operation: ALL
+    resource(r): "com.dits.Employee"
+    condition: (r.getIdentifier() == p.getIdentifier())
+    action: ALLOW
+}
+
+
+rule EmployerCanCreateAJob {
+    description: "Allow employer to create new job"
+    participant: "com.dits.Employer"
+    operation: CREATE
+    resource: "com.dits.Job"
+    action: ALLOW
+}
+
+rule EmployerCanDoAllToHisJob {
+    description: "Allow employer to update his job"
+    participant(p): "com.dits.Employer"
+    operation: ALL
+    resource(r): "com.dits.Job"
+    condition: (r.employer.getIdentifier() == p.getIdentifier())
+    action: ALLOW
+}
+
+/*
+rule EmployerHasFullAccessOnHisJobs {
+    description: "Allow employers to fully control their jobs"
+    participant(p): "com.dits.Employer"
+    operation: ALL
+    resource(r): "com.dits.Job"
+    condition: (r.employer.getIdentifier() == p.getIdentifier())
+    action: ALLOW
+}
+*/
+
+//----Network admin rules
+
+/*
+rule NetworkAdminUser {
+    description: "Business network administrators are completely prohibited"
+    participant: "org.hyperledger.composer.system.NetworkAdmin"
+    operation: ALL
+    resource: "**"
+    action: DENY
+}
+*/

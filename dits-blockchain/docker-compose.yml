@@ -1,0 +1,28 @@
+version: "3.5"
+services:
+  rest-server:
+    container_name: rest
+    environment:
+    - COMPOSER_CARD=${COMPOSER_CARD}
+    - COMPOSER_NAMESPACES=${COMPOSER_NAMESPACES}
+    - COMPOSER_AUTHENTICATION=${COMPOSER_AUTHENTICATION}
+    - COMPOSER_MULTIUSER=${COMPOSER_MULTIUSER}
+    - COMPOSER_PROVIDERS=${COMPOSER_PROVIDERS}
+    build:
+      context: rest-server
+      dockerfile: Dockerfile
+    volumes:
+    - /home/user/.composer:/home/composer/.composer
+    ports:
+    - 3000:3000
+    depends_on:
+    - mongo
+  mongo:
+    container_name: mongo
+    image: mongo
+    ports:
+    - 27017:27017
+networks:
+  default:
+    external:
+      name: composer_default

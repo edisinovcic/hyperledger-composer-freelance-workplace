@@ -1,0 +1,7 @@
+*.bna
+node_modules
+
+# VS Code
+**.vscode/
+**.idea
+code/*
