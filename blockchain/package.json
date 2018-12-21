@@ -2,9 +2,9 @@
   "engines": {
     "composer": "^0.20.5"
   },
+  "name": "blockchain",
   "author": "Edi Sinovčić",
   "email": "edi.sinovcic@gmail.com",
-  "license": "Apache-2.0",
   "maintainers": [
     {
       "name": "Edi Sinovčić",
@@ -13,7 +13,7 @@
     }
   ],
   "version": "0.1.11",
-  "description": "Dits network",
+  "description": "Add description",
   "scripts": {
     "lint": "eslint 'lib/**/*.js' 'test/**/*.js'",
     "test:unit": "nyc --reporter=html --reporter=text mocha -t 0 test/*Spec.js",
@@ -21,9 +21,9 @@
     "test:all": "npm run test:unit && npm run test:bdd",
     "test:all:all": "npm run test:all",
     "prepush": "npm run list && nom run test:all",
-    "archive:create": "mkdirp ./code && composer archive create --sourceType dir --sourceName . -a ./code/dits.bna",
-    "local:install": "composer network install -a ./code/dits.bna --card PeerAdmin@hlfv1",
-    "local:start": "composer network start --networkName dits --networkVersion $npm_package_version --networkAdmin admin --networkAdminEnrollSecret adminpw --card PeerAdmin@hlfv1 --file admin.card",
+    "archive:create": "mkdirp ./code && composer archive create --sourceType dir --sourceName . -a ./code/code.bna",
+    "local:install": "composer network install -a ./code/code.bna --card PeerAdmin@hlfv1",
+    "local:start": "composer network start --networkName blockchain --networkVersion $npm_package_version --networkAdmin admin --networkAdminEnrollSecret adminpw --card PeerAdmin@hlfv1 --file admin.card",
     "local:upgrade": "composer network upgrade --card PeerAdmin@hlfv1 --networkName dits -V $npm_package_version",
     "local:rest-server": "composer-rest-server --card admin --namespaces never --p 3000"
   },
@@ -31,6 +31,7 @@
     "composer",
     "composer-network"
   ],
+  "license": "Apache-2.0",
   "devDependencies": {
     "composer-admin": "^0.20.4",
     "composer-cli": "^0.20.4",

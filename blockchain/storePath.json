@@ -3,7 +3,7 @@
     "wallet": {
       "type": "composer-wallet-filesystem",
       "options": {
-        "storePath": "../api/.composer"
+        "storePath": "~/.composer"
       }
     }
   }
