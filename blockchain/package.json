@@ -2,7 +2,16 @@
   "engines": {
     "composer": "^0.20.5"
   },
-  "name": "dits",
+  "author": "Edi Sinovčić",
+  "email": "edi.sinovcic@gmail.com",
+  "license": "Apache-2.0",
+  "maintainers": [
+    {
+      "name": "Edi Sinovčić",
+      "email": "edi.sinovcic@gmail.com",
+      "url": "blockchain-it.hr"
+    }
+  ],
   "version": "0.1.11",
   "description": "Dits network",
   "scripts": {
@@ -22,9 +31,6 @@
     "composer",
     "composer-network"
   ],
-  "author": "dits",
-  "email": "edi.sinovcic@gmail.com",
-  "license": "Apache-2.0",
   "devDependencies": {
     "composer-admin": "^0.20.4",
     "composer-cli": "^0.20.4",
