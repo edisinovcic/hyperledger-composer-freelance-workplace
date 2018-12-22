@@ -188,6 +188,8 @@ async function addFavouriteEmployeeForEmployer(employeeId, cardName) {
         let businessNetworkConnection = await newConnection();
         await businessNetworkConnection.connect(cardName);
 
+        let currentParticipant = await getCurrentParticipant();
+
         const employerParticipantRegistry = await businessNetworkConnection.getParticipantRegistry(`${config.ns}.${EMPLOYER}`);
         const employeeParticipantRegistry = await businessNetworkConnection.getParticipantRegistry(`${config.ns}.${EMPLOYEE}`);
 
@@ -198,6 +200,36 @@ async function addFavouriteEmployeeForEmployer(employeeId, cardName) {
         let errMessage = typeof err == 'string' ? err : err.message;
         return responseModel.failResponse("Create employee failed", {}, errMessage);
     }
+}
+
+async function findEmployerByUsername(username) {
+    let adminConnection = await newConnection();
+    await adminConnection.connect(config.networkAdminCard);
+
+    const employerParticipantRegistry = await adminConnection.getParticipantRegistry(`${config.ns}.${EMPLOYER}`);
+    const employers = await employerParticipantRegistry.getAll();
+    let id;
+    employers.forEach((employer) => {
+        if (employer.username === username) {
+            id = employer.id;
+        }
+    });
+    return id;
+}
+
+async function findEmployeeByUsername(username) {
+    let adminConnection = await newConnection();
+    await adminConnection.connect(config.networkAdminCard);
+
+    const employerParticipantRegistry = await adminConnection.getParticipantRegistry(`${config.ns}.${EMPLOYEE}`);
+    const employers = await employerParticipantRegistry.getAll();
+    let id;
+    employers.forEach((employee) => {
+        if (employee.username === username) {
+            id = employee.id;
+        }
+    });
+    return id;
 }
 
 async function newConnection() {
@@ -212,6 +244,8 @@ module.exports = {
     createEmployee,
     createEmployer,
     addFavouriteEmployeeForEmployer,
+    findEmployerByUsername,
+    findEmployeeByUsername,
     newConnection,
     disconnectUser
 }

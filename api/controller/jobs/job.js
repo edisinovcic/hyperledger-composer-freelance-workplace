@@ -1,10 +1,10 @@
 const {findEmployerByUsername} = require('../asset');
 
-const {newConnection} = require('./participant');
+const {newConnection} = require('../participant');
 
-const {responseModel} = require('../model');
-const config = require('../config');
-const {cardService} = require('../service');
+const {responseModel} = require('../../model');
+const config = require('../../config');
+const {cardService} = require('../../service');
 const uuid4 = require('uuid/v4');
 
 async function createJob(jobData, cardName) {
